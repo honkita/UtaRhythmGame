@@ -97,7 +97,7 @@ boolean exit = false;
 int rectx = 200;
 
 //screen
-int screen = 3;
+int screen = 4;
 
 
 void setup() {
