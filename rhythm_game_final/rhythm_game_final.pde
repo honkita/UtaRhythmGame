@@ -6,6 +6,8 @@ SoundFile tsunorukimochi; //second song
 float tape = 1;
 SoundFile file2;
 
+char[] letters = {'d', 'f', 'j', 'k'};
+
 //array
 int[] y1 = new int[100]; //declare the array  
 int[] y2 = new int[100]; //declare the array  
@@ -16,8 +18,6 @@ int[] y4 = new int[100]; //declare the array
 HashMap<String,Song> songs = new HashMap<String,Song>();
 s sr = new sairai();
 s tk = new tsunorukimochi();
-
-
 
 float[] x1;
 float[] x2;
@@ -52,8 +52,10 @@ int totalscore = 100000;
 
 
 //song boxes
-int width = 1000;
+int width;
 int height = 100;
+int laneWidth;
+int buttonWidth;
 
 //notes
 boolean k = false;
@@ -83,10 +85,10 @@ boolean song2 = false;
 int songnumber = 0;
 
 //note spawn
-int noterad = 50;
-int notehei = 50;
-int noterad2 = 40;
-int notehei2 = 40;
+int noterad;
+int notehei;
+int noterad2;
+int notehei2;
 
 //button variables
 boolean retry = false;
@@ -120,6 +122,14 @@ void setup() {
   //logo
   logo = loadImage("LOGO.png");
   logo.resize(200, 200);
+  
+  width = displayWidth/3 * 2;
+  buttonWidth = displayWidth/4;
+  laneWidth = displayWidth/20;
+  noterad = displayWidth/30;
+  notehei = displayWidth/30;
+  noterad2 = displayWidth/30 - displayWidth/50;
+  notehei2 = displayWidth/30 - displayWidth/50;
 
 
   //Sairai 
@@ -166,38 +176,16 @@ void draw() {
 
   //screen initialization
   if (screen == 1 || screen == 2) { 
+    
+    
     //horizontal line for the notes to hit
     stroke(255);
     strokeWeight(1);
-    line(100, 900, 900, 900);
+    line(displayWidth/16 - laneWidth, displayHeight/8*7, displayWidth/16 * 7 + laneWidth, displayHeight/8*7);
 
     rectMode(CORNER);
 
-    //rectangular bars
-    noStroke();
-    fill(200, 200, 200, 100);
-    rect(725, 0, 150, 900);
-
-    fill(200, 200, 200, 100);
-    rect(525, 0, 150, 900);
-
-    fill(200, 200, 200, 100);
-    rect(325, 0, 150, 900);
-
-    fill(200, 200, 200, 100);
-    rect(125, 0, 150, 900);
-
-    //lines on bar
-    strokeWeight(1.5);
-    stroke(255);
-    line(725, 0, 725, 900);
-    line(875, 0, 875, 900);
-    line(525, 0, 525, 900);
-    line(675, 0, 675, 900);
-    line(325, 0, 325, 900);
-    line(475, 0, 475, 900);
-    line(125, 0, 125, 900);
-    line(275, 0, 275, 900);
+    
 
     //health bar 
 
@@ -231,55 +219,37 @@ void draw() {
     //combo
     textAlign(CENTER);
     fill(255, 255, 255, 100);
-    text(combo, 500, 500);
+    text(combo, displayWidth/4, displayHeight/2);
 
     rectMode(CORNER);
-
-    //k note
-    noStroke();
-    fill(0);
-    ellipse(800, 900, 20, 20);
-    stroke(0.5);
-    strokeWeight(2);
-    line(800, 0, 800, 900);
-    text("k", 780, 1000);
-
-    //j note
-    noStroke();
-    fill(0);
-    ellipse(600, 900, 20, 20);
-    stroke(0.5);
-    strokeWeight(2);
-    line(600, 0, 600, 900);
-    text("j", 600, 1000);
-
-    //f note
-    noStroke();
-    fill(0);
-    ellipse(400, 900, 20, 20);
-    stroke(0.5);
-    strokeWeight(2);
-    line(400, 0, 400, 900);
-    text("f", 390, 1000);
-
-    //d note
-    noStroke();
-    fill(0);
-    ellipse(200, 900, 20, 20);
-    stroke(0.5);
-    strokeWeight(2);
-    line(200, 0, 200, 900);
-    text("d", 185, 1000);
+ 
+    for(int i = 0; i < 4; i++){
+      noStroke();
+      fill(200, 200, 200, 100);
+      strokeWeight(1.5);
+      stroke(255);
+      line(displayWidth/16 * (2 * i + 1) - laneWidth / 2, 0, displayWidth/16 * (2 * i + 1) - laneWidth / 2, displayHeight/8*7);
+      line(displayWidth/16 * (2 * i + 1) + laneWidth / 2, 0, displayWidth/16 * (2 * i + 1) + laneWidth / 2, displayHeight/8*7);
+      rect(displayWidth/16 * (2 * i + 1) - laneWidth / 2, 0, laneWidth, displayHeight/8*7);
+      noStroke();
+      fill(0);
+      ellipse(displayWidth/16 * (2 * i + 1), displayHeight/8*7, 20, 20);
+      stroke(0.5);
+      strokeWeight(2);
+      line(displayWidth/16 * (2 * i + 1), 0, displayWidth/16 * (2 * i + 1), displayHeight/8*7);
+      textAlign(CENTER);
+      text(letters[i], displayWidth/16 * (2 * i + 1), displayHeight/32*31);
+    }
 
     //rectangle for exiting
     noStroke();
     rectMode(RADIUS);
     fill(100);
-    rect(1500, 1000, 150, 50);
+    rect(displayWidth/16 * 13, displayHeight/8*7, 150, 50);
 
     fill(255);
     textAlign(CENTER);
-    text("QUIT (Q)", 1500, 1000);
+    text("QUIT (Q)", displayWidth/16 * 13, displayHeight/8*7 + 25);
 
 
     if (keyPressed == true) {
@@ -342,10 +312,9 @@ void draw() {
     }
   }
 
-  if ((song1 == true && screen == 1) ||(song2 == true && screen == 2)) {
+  if ((screen == 1 && song1 == true) ||(screen == 2 && song2 == true)) {
 
     z =  millis / 1000 ;
-
     m = z - currentm;
     String song = "";
     
@@ -376,13 +345,13 @@ void draw() {
       if (m + sh >= x1[j1]) {
         y1[j1] = y1[j1] + 10;
         fill(0);
-        ellipse(800, y1[j1], noterad, notehei);
+        ellipse(displayWidth/16 * 7, y1[j1], noterad, notehei);
         fill(246, 132, 108);
-        ellipse(800, y1[j1], noterad2, notehei2);
+        ellipse(displayWidth/16 * 7, y1[j1], noterad2, notehei2);
       }
 
       //miss no click
-      if (y1[j1] >= 1200 && y1[j1] <= 1300 ) {
+      if (y1[j1] >=  displayHeight/8*7*1.25 && y1[j1] <= 1300 ) {
         y1[j1] = 2000;
         combo = 0;
         k = false;
@@ -393,10 +362,8 @@ void draw() {
 
       //collision detection
       if (k == true) {
-        println(y1[j1] + ":" + j1);
-
         //perfect
-        if (y1[j1] >= 850 && y1[j1] <= 950 ) {
+        if (y1[j1] >= displayHeight/8*7*0.9 && y1[j1] <= displayHeight/8*7*1.1 ) {
           file2.play();
           file2.amp(0.1);
           y1[j1] = 2000;
@@ -409,7 +376,7 @@ void draw() {
         }
 
         //great
-        if (y1[j1] >= 800 && y1[j1] <= 850 ) {
+        if (y1[j1] >=  displayHeight/8*7*0.8 && y1[j1] <= displayHeight/8*7*0.9 ) {
           file2.play();
           file2.amp(0.1);
           y1[j1] = 2000;
@@ -420,7 +387,7 @@ void draw() {
           rectx = rectx + 3;
           break;
         } 
-        if (y1[j1] >= 950 && y1[j1] <= 975 ) {
+        if (y1[j1] >= displayHeight/8*7*1.1 && y1[j1] <=  displayHeight/8*7*1.2 ) {
           file2.play();
           file2.amp(0.1);
           y1[j1] = 2000;
@@ -433,7 +400,7 @@ void draw() {
         }
 
         //fast
-        if (y1[j1] >= 750 && y1[j1] <= 800 ) {
+        if (y1[j1] >=  displayHeight/8*7*0.75 && y1[j1] <=  displayHeight/8*7*0.8 ) {
           file2.play();
           file2.amp(0.1);
           y1[j1] = 2000;
@@ -445,7 +412,7 @@ void draw() {
         }
 
         //slow
-        if (y1[j1] >= 975 && y1[j1] <= 1200 ) {
+        if (y1[j1] >=  displayHeight/8*7*1.2 && y1[j1] <=  displayHeight/8*7*1.25 ) {
           file2.play();
           file2.amp(0.1);
           y1[j1] = 2000;
@@ -457,7 +424,7 @@ void draw() {
         }
 
         //miss
-        if (y1[j1] >= 1200 && y1[j1] <= 1300 ) {
+        if (y1[j1] >=  displayHeight/8*7*1.25 && y1[j1] <= 1300 ) {
           y1[j1] = 2000;
           combo = 0;
           k = false;
@@ -479,13 +446,13 @@ void draw() {
       if (m + sh >= x2[j2]) {
         y2[j2] = y2[j2] + 10;
         fill(0);
-        ellipse(600, y2[j2], noterad, notehei);
+        ellipse(displayWidth/16 * 5, y2[j2], noterad, notehei);
         fill(246, 132, 108);
-        ellipse(600, y2[j2], noterad2, notehei2);
+        ellipse(displayWidth/16 * 5, y2[j2], noterad2, notehei2);
       }
 
       //miss no click
-      if (y2[j2] >= 1200 && y2[j2] <= 1300 ) {
+      if (y2[j2] >=  displayHeight/8*7*1.25 && y2[j2] <= 1300 ) {
         y2[j2] = 2000;
         combo = 0;
         j = false;
@@ -499,7 +466,7 @@ void draw() {
         println(y2[j2] + ":" + j2);
 
         //perfect
-        if (y2[j2] >= 850 && y2[j2] <= 950 ) {
+        if (y2[j2] >= displayHeight/8*7*0.9 && y2[j2] <= displayHeight/8*7*1.1 ) {
           file2.play();
           file2.amp(0.1);
           y2[j2] = 2000;
@@ -512,7 +479,7 @@ void draw() {
         }
 
         //great
-        if (y2[j2] >= 800 && y2[j2] <= 850 ) {
+        if (y2[j2] >=  displayHeight/8*7*0.8 && y2[j2] <= displayHeight/8*7*0.9 ) {
           file2.play();
           file2.amp(0.1);
           y2[j2] = 2000;
@@ -523,7 +490,7 @@ void draw() {
           rectx = rectx + 3;
           break;
         } 
-        if (y2[j2] >= 950 && y2[j2] <= 975 ) {
+        if (y2[j2] >= displayHeight/8*7*1.1 && y2[j2] <=  displayHeight/8*7*1.2 ) {
           file2.play();
           file2.amp(0.1);
           y2[j2] = 2000;
@@ -536,7 +503,7 @@ void draw() {
         }
 
         //fast
-        if (y2[j2] >= 750 && y2[j2] <= 800 ) {
+        if (y2[j2] >=  displayHeight/8*7*0.75 && y2[j2] <=  displayHeight/8*7*0.8 ) {
           file2.play();
           file2.amp(0.1);
           y2[j2] = 2000;
@@ -548,7 +515,7 @@ void draw() {
         }
 
         //slow
-        if (y2[j2] >= 975 && y2[j2] <= 1200 ) {
+        if (y2[j2] >=  displayHeight/8*7*1.2 && y2[j2] <=  displayHeight/8*7*1.25 ) {
           file2.play();
           file2.amp(0.1);
           y2[j2] = 2000;
@@ -560,7 +527,7 @@ void draw() {
         }
 
         //miss
-        if (y2[j2] >= 1200 && y2[j2] <= 1300 ) {
+        if (y2[j2] >=  displayHeight/8*7*1.25 && y2[j2] <= 1300 ) {
           y2[j2] = 2000;
           combo = 0;
           miss++;
@@ -580,13 +547,13 @@ void draw() {
       if (m + sh >= x3[j3]) {
         y3[j3] = y3[j3] + 10;
         fill(0);
-        ellipse(400, y3[j3], noterad, notehei);
+        ellipse(displayWidth/16 * 3, y3[j3], noterad, notehei);
         fill(246, 132, 108);
-        ellipse(400, y3[j3], noterad2, notehei2);
+        ellipse(displayWidth/16 * 3, y3[j3], noterad2, notehei2);
       }
 
       //miss no click
-      if (y3[j3] >= 1200 && y3[j3] <= 1300 ) {
+      if (y3[j3] >=  displayHeight/8*7*1.25 && y3[j3] <= 1300 ) {
         y3[j3] = 2000;
         combo = 0;
         f = false;
@@ -600,7 +567,7 @@ void draw() {
         println(y3[j3] + ":" + j3);
 
         //perfect
-        if (y3[j3] >= 850 && y3[j3] <= 950 ) {
+        if (y3[j3] >= displayHeight/8*7*0.9 && y3[j3] <= displayHeight/8*7*1.1 ) {
           file2.play();
           file2.amp(0.1);
           y3[j3] = 2000;
@@ -613,7 +580,7 @@ void draw() {
         }
 
         //great
-        if (y3[j3] >= 800 && y3[j3] <= 850 ) {
+        if (y3[j3] >=  displayHeight/8*7*0.8 && y3[j3] <= displayHeight/8*7*0.9 ) {
           file2.play();
           file2.amp(0.1);
           y3[j3] = 2000;
@@ -624,7 +591,7 @@ void draw() {
           rectx = rectx + 3;
           break;
         } 
-        if (y3[j3] >= 950 && y3[j3] <= 975 ) {
+        if (y3[j3] >= displayHeight/8*7*1.1 && y3[j3] <=  displayHeight/8*7*1.2 ) {
           file2.play();
           file2.amp(0.1);
           y3[j3] = 2000;
@@ -637,7 +604,7 @@ void draw() {
         }
 
         //fast
-        if (y3[j3] >= 750 && y3[j3] <= 800 ) {
+        if (y3[j3] >=  displayHeight/8*7*0.75 && y3[j3] <=  displayHeight/8*7*0.8 ) {
           file2.play();
           file2.amp(0.1);
           y3[j3] = 2000;
@@ -649,7 +616,7 @@ void draw() {
         }
 
         //slow
-        if (y3[j3] >= 975 && y3[j3] <= 1200 ) {
+        if (y3[j3] >=  displayHeight/8*7*1.2 && y3[j3] <=  displayHeight/8*7*1.25 ) {
           file2.play();
           file2.amp(0.1);
           y3[j3] = 2000;
@@ -661,7 +628,7 @@ void draw() {
         }
 
         //miss
-        if (y3[j3] >= 1200 && y3[j3] <= 1300 ) {
+        if (y3[j3] >=  displayHeight/8*7*1.25 && y3[j3] <= 1300 ) {
           y3[j3] = 2000;
           combo = 0;
           miss++;
@@ -681,13 +648,13 @@ void draw() {
       if (m + sh >= x4[j4]) {
         y4[j4] = y4[j4] + 10;
         fill(0);
-        ellipse(200, y4[j4], noterad, notehei);
+        ellipse(displayWidth/16, y4[j4], noterad, notehei);
         fill(246, 132, 108);
-        ellipse(200, y4[j4], noterad2, notehei2);
+        ellipse(displayWidth/16, y4[j4], noterad2, notehei2);
       }
 
       //miss no click
-      if (y4[j4] >= 1200 && y4[j4] <= 1300 ) {
+      if (y4[j4] >=  displayHeight/8*7*1.25 && y4[j4] <= 1300 ) {
         y4[j4] = 2000;
         combo = 0;
         d = false;
@@ -699,11 +666,8 @@ void draw() {
       //collision detection
       if (d == true) {
 
-        println(y4[j4] + ":" + j4);
-
-
         //perfect
-        if (y4[j4] >= 850 && y4[j4] <= 950 ) {
+        if (y4[j4] >= displayHeight/8*7*0.9 && y4[j4] <= displayHeight/8*7*1.1 ) {
           file2.play();
           file2.amp(0.1);
           y4[j4] = 2000;
@@ -716,7 +680,7 @@ void draw() {
         }
 
         //great
-        if (y4[j4] >= 800 && y4[j4] <= 850 ) {
+        if (y4[j4] >=  displayHeight/8*7*0.8 && y4[j4] <= displayHeight/8*7*0.9 ) {
           file2.play();
           file2.amp(0.1);
           y4[j4] = 2000;
@@ -727,7 +691,7 @@ void draw() {
           rectx = rectx + 3;
           break;
         } 
-        if (y4[j4] >= 950 && y4[j4] <= 975 ) {
+        if (y4[j4] >= displayHeight/8*7*1.1 && y4[j4] <=  displayHeight/8*7*1.2 ) {
           file2.play();
           file2.amp(0.1);
           y4[j4] = 2000;
@@ -740,7 +704,7 @@ void draw() {
         }
 
         //fast
-        if (y4[j4] >= 750 && y4[j4] <= 800 ) {
+        if (y4[j4] >=  displayHeight/8*7*0.75 && y4[j4] <=  displayHeight/8*7*0.8 ) {
           file2.play();
           file2.amp(0.1);
           y4[j4] = 2000;
@@ -752,7 +716,7 @@ void draw() {
         }
 
         //slow
-        if (y4[j4] >= 975 && y4[j4] <= 1200 ) {
+        if (y4[j4] >=  displayHeight/8*7*1.2 && y4[j4] <=  displayHeight/8*7*1.25 ) {
           file2.play();
           file2.amp(0.1);
           y4[j4] = 2000;
@@ -764,7 +728,7 @@ void draw() {
         }
 
         //miss
-        if (y4[j4] >= 1200 && y4[j4] <= 1300 ) {
+        if (y4[j4] >=  displayHeight/8*7*1.25 && y4[j4] <= 1300 ) {
           y4[j4] = 2000;
           combo = 0;
           miss++;
@@ -821,15 +785,15 @@ void draw() {
     rect(3 * displayWidth/4, 4 * displayHeight/10, displayWidth/5, displayHeight/3);//letter score
 
     //buttons
-    rect(1100, 900, 200, 50);
-    if (mouseX >= 900 && mouseX <= 1300 && mouseY >= 850 && mouseY <= 950) {
+    rect(displayWidth/10 * 6, displayHeight/8*7, width, 50);
+    if (mouseX >= displayWidth/10 * 6  && mouseX <= displayWidth/10 * 6 + width && mouseY >= displayHeight/8*7*0.9 && mouseY <= displayHeight/8*7*1.1) {
       home = true;
     } else {
       home = false;
     }
 
-    rect(1600, 900, 200, 50);
-    if (mouseX >= 1400 && mouseX <= 1800 && mouseY >= 850 && mouseY <= 950) {
+    rect(1600, displayHeight/8*7, 200, 50);
+    if (mouseX >= 1400 && mouseX <= 1800 && mouseY >= displayHeight/8*7*0.9 && mouseY <= displayHeight/8*7*1.1) {
       retry = true;
     } else {
       retry = false;
@@ -840,8 +804,8 @@ void draw() {
     fill(0);
     textSize(50);
     textAlign(CENTER, CENTER);
-    text("Retry", 1600, 900);
-    text("Home", 1100, 900);
+    text("Retry", 1600, displayHeight/8*7);
+    text("Home", 1100, displayHeight/8*7);
 
     fill(0);
     textSize(40);
@@ -898,34 +862,46 @@ void draw() {
     background(255);
     noStroke();
 
+    
 
     //songs
     fill(0, 0, 0, 100);
     rectMode(CORNER);
-    rect(100, 100, width, height); //song #1
-    rect(100, 250, width, height); //song #2
-    rect(100, 900, 200, 100);
+    
+    rect(displayWidth/20, displayHeight/20 * 17, width/2, height);
+    
+    for(int i = 0; i < songs.size(); i++){
+      rect(displayWidth/20, displayHeight/20 * (3 * (i + 1) - 1), width, height);
+    }
+      
+    //box text
+    textAlign(LEFT);
+    fill(0);
+    textFont(font);
+    
 
     //back button
-    if (mouseX >= 100 && mouseX<= 300 && mouseY >= 900 && mouseY <= 1000) {
+    if (mouseX >= displayWidth/20 && mouseX<= displayWidth/20 + width/2 && mouseY >= displayHeight/20 * 17 && mouseY <=  displayHeight/20 * 17 + height) {
       back = true;
     } else {
       back = false;
     }
+    
+    //back button
+    textSize(50);
+    text("Back", displayWidth/20, displayHeight/40 * 39);
 
-    //box text
-    textAlign(CENTER);
-    fill(0);
-    textFont(font);
+    
+    
 
 
     //song 1
     textSize(50);
-    text("\u518D\u6765", 200, 150);
+    text("\u518D\u6765", displayWidth/20, displayHeight/20 * 2.5);
     textSize(20);
-    text("\u5C0F\u6797\u4FE1\u4E00", 200, 190);
+    text("\u5C0F\u6797\u4FE1\u4E00", displayWidth/20, displayHeight/20 * 3.5);
 
-    if (mouseX >= 100 && mouseX <= 1100 && mouseY >= 100 && mouseY <= 200) {
+    if (mouseX >= displayWidth/20 && mouseX <= displayWidth/20 + width/2 && mouseY >= displayHeight/20 * 2 && mouseY <= displayHeight/20 * 2 + height) {
       sai = true;
     } else {
       sai = false;
@@ -935,18 +911,16 @@ void draw() {
 
     //song 2
     textSize(50);
-    text("\u30C4\u30CE\u30EB\u30AD\u30E2\u30C1", 300, 290);
+    text("\u30C4\u30CE\u30EB\u30AD\u30E2\u30C1", displayWidth/20, displayHeight/20 * 5.5);
     textSize(20);
-    text("CHiCO with HoneyWorks", 275, 340);
+    text("CHiCO with HoneyWorks", displayWidth/20, displayHeight/20 * 6.5);
 
-    if (mouseX >= 100 && mouseX <= 1100 && mouseY >= 250 && mouseY <= 350) {
+    if (mouseX >= displayWidth/20 && mouseX <= displayWidth/20 + width/2 && mouseY >= displayHeight/20 * 5 && mouseY <= displayHeight/20 * 5 + height) {
       tsu = true;
     } else {
       tsu = false;
     }
 
-    //back button
-    textSize(50);
-    text("Back", 200, 975);
+    
   }
 }
